@@ -1,0 +1,25 @@
+name: 'app'
+
+type: 'java:8'
+
+hooks:
+    build: |
+        # Generate a unified Jar file of the application.
+        mvn package
+
+relationships:
+    database: 'mysqldb:mysql'
+
+web:
+    upstream:
+        socket_family: tcp
+        protocol: http
+    commands:
+        # Platform.sh environment variables need to be mapped into Java system properties
+        # manually.  This small Python script handles that.
+        start: "python platformsh.py"
+    locations:
+        /:
+            passthru: true
+
+disk: 512
